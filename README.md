@@ -19,6 +19,7 @@ Langkah ini merupakan tahap Feature Selection dan Multicollinearity Analysis men
 
 b. Korelasi Fitur
 Langkah ini merupakan tahap Feature Engineering dengan memisahkan variabel prediktor (X) dan target (y). Variabel X dibentuk dengan menghapus kolom `quality` sebagai label serta `Id` karena tidak memiliki nilai prediktif, sedangkan y berisi `quality` sebagai target. Pemisahan ini penting agar model fokus pada pola fitur tanpa terpengaruh data yang tidak relevan dan mencegah kebocoran informasi selama pelatihan.
+
 3. Preprocessing
 
 a. Pemisahan fitur dan target
