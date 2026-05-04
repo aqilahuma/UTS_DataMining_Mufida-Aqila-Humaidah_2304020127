@@ -1,5 +1,6 @@
 # UTS_DataMining_Mufida-Aqila-Humaidah_2304020127
 Langkah-Langkah
+
 A. PERSIAPAN DATA
 1. Import Data
 Langkah ini merupakan tahap import library sebagai awal membangun data pipeline. Pandas dan NumPy digunakan untuk pengolahan dan komputasi data, sedangkan Matplotlib dan Seaborn untuk visualisasi distribusi serta korelasi variabel. Selanjutnya, Scikit-Learn dipakai untuk preprocessing (train-test split, StandardScaler), pemodelan (Logistic Regression hingga Random Forest), hingga evaluasi. GridSearchCV membantu optimasi parameter, sementara metrik seperti Confusion Matrix dan cross-validation digunakan untuk menilai performa serta stabilitas model. Selain itu, warnings dinonaktifkan agar output lebih rapi selama proses eksperimen.
