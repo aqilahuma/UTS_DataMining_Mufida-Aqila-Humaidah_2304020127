@@ -11,19 +11,30 @@ Langkah ini merupakan tahap Data Exploration awal menggunakan `.info()` dan `.he
 
 B. PEMBERSIHAN DATA
 1. Cek Missing Value
+
 Langkah ini merupakan tahap Target Variable Analysis menggunakan count plot untuk melihat distribusi variabel `quality`. Hasilnya menunjukkan adanya ketidakseimbangan data, di mana kelas menengah (nilai 5 dan 6) mendominasi, sementara kelas ekstrem (3 dan 8) sangat sedikit. Hal ini penting karena dapat menyebabkan bias model, sehingga perlu dipertimbangkan teknik seperti resampling atau binning agar prediksi lebih seimbang dan akurat.
+
 2. Exploratory Data Analysis (EDA)
+
 a. Distribusi Target
+
 Langkah ini merupakan tahap Feature Selection dan Multicollinearity Analysis menggunakan correlation matrix untuk melihat hubungan antarvariabel. Hasilnya menunjukkan bahwa `alcohol` memiliki korelasi positif tertinggi (0.47) terhadap kualitas, sedangkan `volatile acidity` berkorelasi negatif (-0.43), sehingga keduanya menjadi prediktor penting. Selain itu, terdeteksi potensi multikolinearitas pada beberapa fitur seperti `fixed acidity` dengan `density` serta `free sulfur dioxide` dengan `total sulfur dioxide`. Sementara itu, `Id` tidak memiliki nilai prediktif karena korelasinya mendekati nol, sehingga dapat diabaikan. Tahap ini membantu menentukan fitur yang paling relevan untuk meningkatkan efisiensi dan akurasi model.
+
 b. Korelasi Fitur
+
 Langkah ini merupakan tahap Feature Engineering dengan memisahkan variabel prediktor (X) dan target (y). Variabel X dibentuk dengan menghapus kolom `quality` sebagai label serta `Id` karena tidak memiliki nilai prediktif, sedangkan y berisi `quality` sebagai target. Pemisahan ini penting agar model fokus pada pola fitur tanpa terpengaruh data yang tidak relevan dan mencegah kebocoran informasi selama pelatihan.
+
 3. Preprocessing
+
 a. Pemisahan fitur dan target
 Langkah ini merupakan tahap Data Validation Strategy dengan membagi data menjadi training set dan validation set. Parameter `test_size=0.2` mengalokasikan 20% data untuk validasi, `random_state=42` memastikan hasil konsisten, dan `stratify=y` menjaga proporsi kelas tetap seimbang. Hal ini penting agar model dilatih dan divalidasi pada distribusi data yang adil serta menghindari bias akibat ketidakseimbangan kelas.
+
 b. Split data
 Langkah ini merupakan tahap Data Validation Strategy dengan membagi data menjadi training set dan validation set. Parameter `test_size=0.2` mengalokasikan 20% data untuk validasi, `random_state=42` memastikan hasil konsisten, dan `stratify=y` menjaga proporsi kelas tetap seimbang. Hal ini penting agar model dilatih dan divalidasi pada distribusi data yang adil serta menghindari bias akibat ketidakseimbangan kelas.
+
 c. Feature scaling
 Langkah ini merupakan tahap **Feature Scaling** menggunakan **StandardScaler** untuk menyamakan skala fitur agar memiliki mean 0 dan standar deviasi 1. Hal ini penting agar fitur dengan nilai besar tidak mendominasi, terutama pada algoritma seperti KNN dan Regresi Logistik. Proses dilakukan dengan `fit_transform` pada **X_train** dan `transform` pada **X_val** untuk mencegah *data leakage* sehingga evaluasi model tetap objektif.
+
 d. Data testing
 Langkah ini merupakan tahap Final Data Preparation untuk memastikan data testing memiliki struktur dan skala yang sama dengan data pelatihan. Kolom `Id` dihapus agar konsisten, kemudian dilakukan `scaler.transform` menggunakan parameter dari data latih untuk menjaga objektivitas dan mencegah *data leakage*. Selain itu, `test_ids` disimpan untuk menghubungkan hasil prediksi dengan data asli. Tahap ini memastikan hasil prediksi valid dan bebas dari kesalahan teknis.
 
