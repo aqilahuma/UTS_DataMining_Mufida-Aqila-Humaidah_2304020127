@@ -2,47 +2,82 @@
 Langkah-Langkah
 
 A. PERSIAPAN DATA
+
 1. Import Data
+
 Langkah ini merupakan tahap import library sebagai awal membangun data pipeline. Pandas dan NumPy digunakan untuk pengolahan dan komputasi data, sedangkan Matplotlib dan Seaborn untuk visualisasi distribusi serta korelasi variabel. Selanjutnya, Scikit-Learn dipakai untuk preprocessing (train-test split, StandardScaler), pemodelan (Logistic Regression hingga Random Forest), hingga evaluasi. GridSearchCV membantu optimasi parameter, sementara metrik seperti Confusion Matrix dan cross-validation digunakan untuk menilai performa serta stabilitas model. Selain itu, warnings dinonaktifkan agar output lebih rapi selama proses eksperimen.
+
 2. Load Data
+
 Langkah ini merupakan tahap Data Acquisition (akuisisi data) di mana fungsi `pd.read_csv` dari Pandas digunakan untuk memuat dataset dari file CSV ke dalam bentuk DataFrame. Data kemudian dibagi menjadi dua variabel, yaitu `train_data` sebagai data pelatihan untuk mengenali pola, dan `test_data` sebagai data uji untuk mengevaluasi akurasi serta kemampuan generalisasi model. Pemisahan ini penting untuk mencegah terjadinya *data leakage* sehingga hasil prediksi tetap valid dan terstruktur.
+
 3. Cek Struktur Data
+
 Langkah ini merupakan tahap Data Exploration awal menggunakan `.info()` dan `.head()` untuk memahami struktur dataset. Hasilnya menunjukkan 857 data training dan 286 data testing tanpa missing value dengan fitur numerik. Dari sini diketahui bahwa `quality` adalah target, sedangkan `Id` hanya sebagai identitas. Dataset sudah rapi dan siap untuk preprocessing atau pemodelan.
 
 B. PEMBERSIHAN DATA
 1. Cek Missing Value
+
 Langkah ini merupakan tahap Target Variable Analysis menggunakan count plot untuk melihat distribusi variabel `quality`. Hasilnya menunjukkan adanya ketidakseimbangan data, di mana kelas menengah (nilai 5 dan 6) mendominasi, sementara kelas ekstrem (3 dan 8) sangat sedikit. Hal ini penting karena dapat menyebabkan bias model, sehingga perlu dipertimbangkan teknik seperti resampling atau binning agar prediksi lebih seimbang dan akurat.
+
 2. Exploratory Data Analysis (EDA)
+
 Langkah ini mencakup analisis korelasi fitur dan feature engineering dalam proses pemodelan. Berdasarkan correlation matrix, diketahui bahwa `alcohol` memiliki korelasi positif tertinggi (0.47) terhadap kualitas, sedangkan `volatile acidity` berkorelasi negatif (-0.43), sehingga keduanya menjadi prediktor penting, disertai indikasi multikolinearitas pada beberapa fitur seperti `fixed acidity` dengan `density` serta `free sulfur dioxide` dengan `total sulfur dioxide`, sementara `Id` tidak memiliki nilai prediktif. Selanjutnya, dilakukan pemisahan variabel dengan membentuk X (tanpa `quality` dan `Id`) dan y (`quality`) agar model hanya mempelajari fitur yang relevan serta menghindari kebocoran data selama proses pelatihan.
+
 3. Preprocessing
+
 Langkah ini mencakup tahapan persiapan data mulai dari pemisahan fitur dan target hingga finalisasi data testing. Pertama, data dibagi menjadi training set dan validation set menggunakan `test_size=0.2`, `random_state=42`, dan `stratify=y` untuk menjaga konsistensi serta keseimbangan distribusi kelas agar model tidak bias. Selanjutnya dilakukan feature scaling menggunakan **StandardScaler** untuk menyamakan skala fitur, dengan `fit_transform` pada data latih dan `transform` pada data validasi guna mencegah *data leakage*. Terakhir, pada tahap final data testing, kolom `Id` dihapus agar konsisten dengan data pelatihan, lalu dilakukan normalisasi menggunakan parameter dari data latih serta penyimpanan `test_ids` untuk menjaga keterhubungan hasil prediksi dengan data asli, sehingga seluruh data siap digunakan untuk proses pemodelan secara valid dan konsisten.
 
 C. PEMBUATAN MODEL
+
 1. Model Desicion Tree
+
 Tahap ini merupakan proses Model Implementation and Validation menggunakan Decision Tree dengan `max_depth=10` untuk membatasi kompleksitas dan `random_state=42` agar hasil konsisten. Model dilatih dengan `.fit()` lalu diuji pada data validasi. Hasil akurasi sebesar 56,39% menunjukkan performa yang masih moderat, kemungkinan dipengaruhi oleh kompleksitas data dan ketidakseimbangan kelas, sehingga dapat dijadikan baseline untuk dibandingkan dengan model yang lebih kuat seperti Random Forest.
+
 2. Model Random Forest
+
 Tahap ini merupakan proses pelatihan dan evaluasi model Random Forest dengan 200 pohon keputusan (`n_estimators=200`) untuk meningkatkan stabilitas dan akurasi prediksi. Parameter `max_depth=15` digunakan agar model mampu menangkap pola yang lebih kompleks. Model dilatih menggunakan data yang sudah diskalakan, kemudian diuji pada data validasi. Hasil akurasi 57,55% menunjukkan peningkatan dibanding model sebelumnya karena Random Forest lebih baik dalam menangani hubungan non-linear dan mengurangi varians, meskipun performa masih dipengaruhi oleh ketidakseimbangan kelas pada dataset.
+
 3. Model Logistic Regression
+
 Tahap ini merupakan **Model Comparison** yang membandingkan performa beberapa algoritma dalam bentuk tabel dan grafik batang untuk menentukan model terbaik. Hasilnya menunjukkan **Logistic Regression** memiliki akurasi tertinggi (61,05%), diikuti **Random Forest** (57,56%) dan **Decision Tree** (56,40%). Dari perbandingan ini dapat disimpulkan bahwa model linear lebih efektif untuk dataset ini, sehingga Logistic Regression menjadi pilihan utama untuk tahap prediksi akhir.
+
 4. Model K-Nearest Neighbors (KNN)
+
 Tahap ini merupakan proses implementasi algoritma K-Nearest Neighbors (KNN)** dengan `n_neighbors=5`, yang menentukan label berdasarkan kedekatan jarak antar data. Model dilatih menggunakan data yang telah melalui *feature scaling* agar perhitungan jarak lebih adil. Hasil akurasi sebesar **48,25%** menunjukkan performa terendah dibanding model lain, mengindikasikan bahwa data cenderung saling tumpang tindih atau terlalu kompleks untuk dipisahkan hanya berdasarkan jarak, sehingga KNN kurang efektif pada dataset ini.
+
 5. Perbandingan Keempat Model
+
 Tahap ini merupakan fase **Model Comparison and Selection**, di mana performa seluruh model dirangkum dan divisualisasikan untuk menentukan yang terbaik. Hasilnya menunjukkan **Logistic Regression** memiliki akurasi tertinggi (**61,04%**), diikuti Random Forest (**57,55%**), Decision Tree (**56,39%**), dan KNN (**48,25%**). Hal ini menunjukkan bahwa pola data lebih sesuai dengan pendekatan linear, sehingga Logistic Regression dipilih sebagai model final. Namun, akurasi yang masih di kisaran 60% mengindikasikan adanya pengaruh ketidakseimbangan kelas terhadap performa model.
+
 6. Evaluasi Model Terbaik (Logistic Regression)
+
 Tahap ini merupakan fase **Detailed Evaluation** menggunakan Classification Report dan Confusion Matrix untuk menganalisis performa Logistic Regression secara lebih rinci. Hasilnya menunjukkan model cenderung bergantung pada kelas mayoritas, di mana kelas 5 dan 6 memiliki skor F1 cukup baik (0,72 dan 0,58), sementara kelas minoritas (3, 4, dan 8) tidak terprediksi (0,00). Confusion Matrix juga memperlihatkan banyak kesalahan pada kelas yang berdekatan. Meskipun akurasi mencapai 61%, nilai Macro Average yang rendah (0,29) menandakan adanya bias akibat ketidakseimbangan data, sehingga diperlukan penanganan lebih lanjut seperti penyeimbangan data.
+
 7. Cross Validation
+
 Tahap ini merupakan proses **Model Robustness Validation** menggunakan *5-Fold Cross Validation* untuk menguji stabilitas model Logistic Regression pada beberapa pembagian data. Dataset dibagi menjadi lima bagian, lalu model dilatih dan diuji sebanyak lima kali untuk memastikan hasil tidak bergantung pada satu split saja. Hasil **CV Mean: 59,12%** menunjukkan performa generalisasi yang cukup stabil dan mendekati akurasi validasi sebelumnya (61%). Hal ini menandakan model cukup konsisten dan tidak mengalami overfitting yang signifikan, meskipun masih memiliki keterbatasan dalam menangani seluruh variasi kelas.
+
 8. Hyperparameter Tuning
+
 Tahap ini merupakan proses **Hyperparameter Tuning** menggunakan `GridSearchCV` untuk mencari parameter terbaik pada model Logistic Regression, khususnya nilai **C** yang mengatur kekuatan regularisasi. Proses dilakukan dengan *3-fold cross validation* dan menghasilkan **Best Params: C = 1** dengan **Best Score: 59,12%**, yang menunjukkan bahwa konfigurasi default sudah optimal untuk dataset ini. Selanjutnya dilakukan **Final Validation** pada data yang belum pernah dilihat sebelumnya menggunakan `accuracy_score`, yang menghasilkan akurasi **61,04%** dan sama dengan sebelum tuning. Hal ini menunjukkan bahwa model sudah berada pada kondisi optimal, cukup stabil, dan tidak mengalami peningkatan signifikan setelah tuning sebelum digunakan pada data testing akhir.
 
 D. PREDIKSI DATA UJI
+
 1. Prediksi Data Testing
+
 Tahap ini merupakan fase **Deployment and Final Prediction**, di mana model terbaik digunakan untuk memprediksi data testing yang belum memiliki label dengan fungsi `.predict()` pada `X_test_scaled`. Hasil prediksi kemudian disimpan dalam DataFrame `submission` bersama `Id` sebagai identitas setiap sampel, lalu diekspor ke file Excel sebagai output akhir. Setiap nilai pada kolom `quality` merepresentasikan hasil prediksi model berdasarkan karakteristik kimia wine yang telah dipelajari sebelumnya. Tahap ini menjadi implementasi akhir dari model yang telah divalidasi, sehingga dapat digunakan untuk penilaian kualitas wine secara otomatis dengan tingkat keandalan yang telah diuji melalui akurasi sebelumnya.
+
 2. Menyimpan CSV
+
 Tahap ini merupakan fase **Data Export**, yaitu langkah akhir untuk menyimpan hasil prediksi ke file CSV menggunakan `.to_csv()`. DataFrame `submission` diekspor menjadi `'hasilprediksi_127.csv'` dengan `index=False` agar hanya berisi kolom `Id` dan `quality`. Hasilnya merupakan output akhir model yang bersifat portabel, dapat dibuka di Excel/Google Sheets, serta menjadi dokumentasi permanen dari eksperimen.
+
 3. Mendownload CSV
+
 Tahap ini merupakan fase **Deployment Deliverable**, yaitu proses mengunduh hasil prediksi dari Google Colab ke perangkat lokal menggunakan `files.download()`. Langkah ini menandai seluruh proses model sudah selesai dan menghasilkan output akhir. File CSV yang diunduh bersifat portabel sehingga dapat digunakan untuk laporan, presentasi, atau kebutuhan lainnya, sekaligus memastikan hasil tersimpan dengan aman dalam format standar.
+
 4. Verifikasi
+
 Tahap ini merupakan fase **Quality Assurance (QA)** untuk memastikan hasil prediksi sudah sesuai sebelum disimpan atau digunakan. Perintah `print(submission.columns)` memverifikasi bahwa hanya terdapat kolom `Id` dan `quality`, sedangkan `print(len(submission), len(test_data))` memastikan jumlah data hasil prediksi sama dengan data testing. Hasilnya menunjukkan format sudah benar dan jumlah data sesuai (286), sehingga tidak ada data yang hilang atau terduplikasi. Hal ini menandakan pipeline berjalan stabil dan hasil prediksi siap digunakan.
 
 E. KESIMPULAN
